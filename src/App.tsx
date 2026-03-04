@@ -20,13 +20,13 @@ interface Session {
 // --- Constants ---
 const FIBONACCI = ['0', '1/2', '1', '2', '3', '5', '8', '13', '21', '?', '☕'];
 
-const PONIES = [
-  { name: 'Twilight Sparkle', color: '#D19FE4', img: './avatars/twilight.png' },
-  { name: 'Pinkie Pie', color: '#FFB6C1', img: './avatars/pinkie.png' },
-  { name: 'Rainbow Dash', color: '#87CEEB', img: '/avatars/rainbow.png' },
-  { name: 'Rarity', color: '#F0F8FF', img: '/avatars/rarity.png' },
-  { name: 'Applejack', color: '#FFD700', img: '/avatars/applejack.png' },
-  { name: 'Fluttershy', color: '#FFFACD', img: '/avatars/fluttershy.png' },
+cconst PONIES = [
+  { name: 'Twilight Sparkle', color: '#D19FE4', img: '/avatars/twilight.jpg' },
+  { name: 'Pinkie Pie', color: '#FFB6C1', img: '/avatars/pinkie.jpg' },
+  { name: 'Rainbow Dash', color: '#87CEEB', img: '/avatars/rainbow.jpg' },
+  { name: 'Rarity', color: '#F0F8FF', img: '/avatars/rarity.jpg' },
+  { name: 'Applejack', color: '#FFD700', img: '/avatars/applejack.jpg' },
+  { name: 'Fluttershy', color: '#FFFACD', img: '/avatars/fluttershy.jpg' },
 ];
 
 export default function App() {
