@@ -21,12 +21,12 @@ interface Session {
 const FIBONACCI = ['0', '1/2', '1', '2', '3', '5', '8', '13', '21', '?', '☕'];
 
 const PONIES = [
-  { name: 'Twilight Sparkle', color: '#D19FE4', img: 'https://static.wikia.nocookie.net/mlp/images/b/bc/Twilight_Sparkle_ID_S9E26.png/revision/latest?cb=20191013145155' },
-  { name: 'Pinkie Pie', color: '#FFB6C1', img: 'https://static.wikia.nocookie.net/mlp/images/b/b1/Pinkie_Pie_ID_S9E26.png/revision/latest?cb=20191013145154' },
-  { name: 'Rainbow Dash', color: '#87CEEB', img: 'https://static.wikia.nocookie.net/mlp/images/e/e9/Rainbow_Dash_ID_S9E26.png/revision/latest?cb=20191013145155' },
-  { name: 'Rarity', color: '#F0F8FF', img: 'https://static.wikia.nocookie.net/mlp/images/d/d1/Rarity_ID_S9E26.png/revision/latest?cb=20191013145155' },
-  { name: 'Applejack', color: '#FFD700', img: 'https://static.wikia.nocookie.net/mlp/images/0/07/Applejack_ID_S9E26.png/revision/latest?cb=20191013145154' },
-  { name: 'Fluttershy', color: '#FFFACD', img: 'https://static.wikia.nocookie.net/mlp/images/d/d6/Fluttershy_ID_S9E26.png/revision/latest?cb=20191013145154' },
+  { name: 'Twilight Sparkle', color: '#D19FE4', img: '/avatars/twilight.png' },
+  { name: 'Pinkie Pie', color: '#FFB6C1', img: '/avatars/pinkie.png' },
+  { name: 'Rainbow Dash', color: '#87CEEB', img: '/avatars/rainbow.png' },
+  { name: 'Rarity', color: '#F0F8FF', img: '/avatars/rarity.png' },
+  { name: 'Applejack', color: '#FFD700', img: '/avatars/applejack.png' },
+  { name: 'Fluttershy', color: '#FFFACD', img: '/avatars/fluttershy.png' },
 ];
 
 export default function App() {
