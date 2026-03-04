@@ -20,7 +20,7 @@ interface Session {
 // --- Constants ---
 const FIBONACCI = ['0', '1/2', '1', '2', '3', '5', '8', '13', '21', '?', '☕'];
 
-cconst PONIES = [
+const PONIES = [
   { name: 'Twilight Sparkle', color: '#D19FE4', img: '/avatars/twilight.jpg' },
   { name: 'Pinkie Pie', color: '#FFB6C1', img: '/avatars/pinkie.jpg' },
   { name: 'Rainbow Dash', color: '#87CEEB', img: '/avatars/rainbow.jpg' },
@@ -111,9 +111,10 @@ export default function App() {
     if (!session) return 0;
     const votes = (Object.values(session.players) as Player[])
       .map(p => {
-        if (p.vote === null) return null;
-        if (p.vote === '1/2') return 0.5;
-        const num = parseFloat(p.vote.toString());
+        const v = p.vote;
+        if (v === null || v === undefined || v === '?' || v === '☕') return null;
+        if (v === '1/2') return 0.5;
+        const num = Number(v);
         return isNaN(num) ? null : num;
       })
       .filter((v): v is number => v !== null);
@@ -155,7 +156,9 @@ export default function App() {
           animate={{ y: 0, opacity: 1 }}
           className="bg-white p-8 rounded-3xl shadow-2xl border-4 border-purple-300 max-w-md w-full"
         >
-          <h2 className="text-3xl font-bold text-purple-600 mb-6 text-center font-pony">Join the Herd</h2>
+          <h2 className="text-2xl font-bold text-purple-600 mb-6 text-center font-pony leading-tight">
+            Join the Herd for Magical Storypointing for Friendship and Agile!
+          </h2>
           
           <div className="space-y-6">
             <div>
@@ -182,7 +185,15 @@ export default function App() {
                         : 'border-transparent hover:bg-gray-50'
                     }`}
                   >
-                    <img src={pony.img} alt={pony.name} className="w-full h-auto rounded-lg mb-1" referrerPolicy="no-referrer" />
+                    <img 
+                      src={pony.img} 
+                      alt={pony.name} 
+                      className="w-full h-auto rounded-lg mb-1" 
+                      referrerPolicy="no-referrer" 
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/bottts/svg?seed=${pony.name}&backgroundColor=ffd700`;
+                      }}
+                    />
                     <span className="text-[10px] font-bold text-purple-800 block truncate">{pony.name}</span>
                   </button>
                 ))}
@@ -305,7 +316,15 @@ export default function App() {
                   style={{ left: `${px}%`, top: `${py}%` }}
                 >
                   <div className={`relative p-1 rounded-full border-4 ${player.id === socket?.id ? 'border-yellow-400' : 'border-white'} shadow-lg bg-white`}>
-                    <img src={player.avatar} alt={player.name} className="w-12 h-12 rounded-full object-cover" referrerPolicy="no-referrer" />
+                    <img 
+                      src={player.avatar} 
+                      alt={player.name} 
+                      className="w-12 h-12 rounded-full object-cover" 
+                      referrerPolicy="no-referrer" 
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/bottts/svg?seed=${player.name}&backgroundColor=d19fe4`;
+                      }}
+                    />
                     {player.vote !== null && !session?.revealed && (
                       <div className="absolute -top-2 -right-2 bg-green-500 text-white p-1 rounded-full shadow-sm">
                         <Sparkles size={12} />
@@ -368,3 +387,4 @@ export default function App() {
     </div>
   );
 }
+
