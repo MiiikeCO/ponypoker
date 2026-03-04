@@ -21,12 +21,12 @@ interface Session {
 const FIBONACCI = ['0', '1/2', '1', '2', '3', '5', '8', '13', '21', '?', '☕'];
 
 const PONIES = [
-  { name: 'Twilight Sparkle', color: '#D19FE4', img: 'https://api.dicebear.com/7.x/bottts/svg?seed=Twilight&backgroundColor=d19fe4' },
-  { name: 'Pinkie Pie', color: '#FFB6C1', img: 'https://api.dicebear.com/7.x/bottts/svg?seed=Pinkie&backgroundColor=ffb6c1' },
-  { name: 'Rainbow Dash', color: '#87CEEB', img: 'https://api.dicebear.com/7.x/bottts/svg?seed=Rainbow&backgroundColor=87ceeb' },
-  { name: 'Rarity', color: '#F0F8FF', img: 'https://api.dicebear.com/7.x/bottts/svg?seed=Rarity&backgroundColor=f0f8ff' },
-  { name: 'Applejack', color: '#FFD700', img: 'https://api.dicebear.com/7.x/bottts/svg?seed=Applejack&backgroundColor=ffd700' },
-  { name: 'Fluttershy', color: '#FFFACD', img: 'https://api.dicebear.com/7.x/bottts/svg?seed=Fluttershy&backgroundColor=fffacd' },
+  { name: 'Twilight Sparkle', color: '#D19FE4', img: 'https://static.wikia.nocookie.net/mlp/images/b/bc/Twilight_Sparkle_ID_S9E26.png/revision/latest?cb=20191013145155' },
+  { name: 'Pinkie Pie', color: '#FFB6C1', img: 'https://static.wikia.nocookie.net/mlp/images/b/b1/Pinkie_Pie_ID_S9E26.png/revision/latest?cb=20191013145154' },
+  { name: 'Rainbow Dash', color: '#87CEEB', img: 'https://static.wikia.nocookie.net/mlp/images/e/e9/Rainbow_Dash_ID_S9E26.png/revision/latest?cb=20191013145155' },
+  { name: 'Rarity', color: '#F0F8FF', img: 'https://static.wikia.nocookie.net/mlp/images/d/d1/Rarity_ID_S9E26.png/revision/latest?cb=20191013145155' },
+  { name: 'Applejack', color: '#FFD700', img: 'https://static.wikia.nocookie.net/mlp/images/0/07/Applejack_ID_S9E26.png/revision/latest?cb=20191013145154' },
+  { name: 'Fluttershy', color: '#FFFACD', img: 'https://static.wikia.nocookie.net/mlp/images/d/d6/Fluttershy_ID_S9E26.png/revision/latest?cb=20191013145154' },
 ];
 
 export default function App() {
@@ -111,9 +111,10 @@ export default function App() {
     if (!session) return 0;
     const votes = (Object.values(session.players) as Player[])
       .map(p => {
-        if (typeof p.vote === 'number') return p.vote;
+        if (p.vote === null) return null;
         if (p.vote === '1/2') return 0.5;
-        return null;
+        const num = parseFloat(p.vote.toString());
+        return isNaN(num) ? null : num;
       })
       .filter((v): v is number => v !== null);
     
@@ -262,24 +263,29 @@ export default function App() {
             const angle = (index / players.length) * 2 * Math.PI;
             const radiusX = 50; // percentage
             const radiusY = 50; // percentage
-            const x = 50 + radiusX * Math.cos(angle) * 1.1; // Offset slightly outside
-            const y = 50 + radiusY * Math.sin(angle) * 1.1;
+            
+            // Player position (outside table)
+            const px = 50 + radiusX * Math.cos(angle) * 1.15;
+            const py = 50 + radiusY * Math.sin(angle) * 1.15;
+
+            // Card position (on table surface)
+            const cx = 50 + radiusX * Math.cos(angle) * 0.65;
+            const cy = 50 + radiusY * Math.sin(angle) * 0.65;
 
             return (
-              <div
-                key={player.id}
-                className="absolute transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center"
-                style={{ left: `${x}%`, top: `${y}%` }}
-              >
-                {/* Player Card */}
-                <div className="relative mb-4">
+              <React.Fragment key={player.id}>
+                {/* Card on Table */}
+                <div 
+                  className="absolute transform -translate-x-1/2 -translate-y-1/2 z-20"
+                  style={{ left: `${cx}%`, top: `${cy}%` }}
+                >
                   <AnimatePresence mode="wait">
                     {player.vote !== null ? (
                       <motion.div
                         key={session?.revealed ? 'front' : 'back'}
-                        initial={{ rotateY: 90 }}
-                        animate={{ rotateY: 0 }}
-                        className={`w-16 h-24 rounded-lg shadow-lg flex items-center justify-center text-2xl font-bold border-2 ${
+                        initial={{ rotateY: 90, scale: 0.8 }}
+                        animate={{ rotateY: 0, scale: 1 }}
+                        className={`w-12 h-18 rounded-lg shadow-lg flex items-center justify-center text-xl font-bold border-2 ${
                           session?.revealed 
                             ? 'bg-white text-purple-600 border-purple-200' 
                             : 'card-back border-white/50'
@@ -288,24 +294,29 @@ export default function App() {
                         {session?.revealed ? player.vote : ''}
                       </motion.div>
                     ) : (
-                      <div className="w-16 h-24 rounded-lg border-2 border-dashed border-emerald-400/50" />
+                      <div className="w-12 h-18 rounded-lg border-2 border-dashed border-emerald-400/30" />
                     )}
                   </AnimatePresence>
                 </div>
 
                 {/* Player Avatar */}
-                <div className={`relative p-1 rounded-full border-4 ${player.id === socket?.id ? 'border-yellow-400' : 'border-white'} shadow-lg bg-white`}>
-                  <img src={player.avatar} alt={player.name} className="w-12 h-12 rounded-full" referrerPolicy="no-referrer" />
-                  {player.vote !== null && !session?.revealed && (
-                    <div className="absolute -top-2 -right-2 bg-green-500 text-white p-1 rounded-full shadow-sm">
-                      <Sparkles size={12} />
-                    </div>
-                  )}
+                <div
+                  className="absolute transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-30"
+                  style={{ left: `${px}%`, top: `${py}%` }}
+                >
+                  <div className={`relative p-1 rounded-full border-4 ${player.id === socket?.id ? 'border-yellow-400' : 'border-white'} shadow-lg bg-white`}>
+                    <img src={player.avatar} alt={player.name} className="w-12 h-12 rounded-full object-cover" referrerPolicy="no-referrer" />
+                    {player.vote !== null && !session?.revealed && (
+                      <div className="absolute -top-2 -right-2 bg-green-500 text-white p-1 rounded-full shadow-sm">
+                        <Sparkles size={12} />
+                      </div>
+                    )}
+                  </div>
+                  <span className="mt-2 px-3 py-1 bg-white/90 rounded-full text-xs font-bold text-purple-900 shadow-sm whitespace-nowrap">
+                    {player.name} {player.id === socket?.id && '(You)'}
+                  </span>
                 </div>
-                <span className="mt-2 px-3 py-1 bg-white/90 rounded-full text-xs font-bold text-purple-900 shadow-sm whitespace-nowrap">
-                  {player.name} {player.id === socket?.id && '(You)'}
-                </span>
-              </div>
+              </React.Fragment>
             );
           })}
         </div>
